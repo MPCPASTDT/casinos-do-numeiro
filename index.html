@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casinos do Numeiro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background: #f4f4f4;
+            transition: background-color 0.3s ease-in-out;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            font-size: 24px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        input, button {
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .info {
+            margin-top: 10px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .message {
+            font-size: 20px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .cheque {
+            display: none;
+            background: #fafafa;
+            border: 2px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Casinos do Numeiro</h1>
+        <form id="gameForm">
+            <label for="playerName">Nome do Jogador:</label><br>
+            <input type="text" id="playerName" placeholder="Digite seu nome" required><br>
+
+            <label for="betAmount">Valor da Aposta:</label><br>
+            <input type="number" id="betAmount" min="1" placeholder="Digite o valor da aposta" required><br>
+
+            <label for="guess">Digite sua Aposta (1 a 10):</label><br>
+            <input type="number" id="guess" min="1" max="10" required><br>
+
+            <button type="submit" id="submitGuess">Apostar</button>
+        </form>
+
+        <button id="addBalance" onclick="addBalance()">Adicionar Saldo</button>
+        <p class="info">Saldo: <span id="balance">50</span> créditos</p>
+        <p class="info">Tentativas: <span id="attempts">0</span></p>
+
+        <div id="gameLog">
+            <h3>Histórico de Apostas</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Palpite</th>
+                        <th>Resultado</th>
+                        <th>Saldo Atual</th>
+                    </tr>
+                </thead>
+                <tbody id="logTableBody"></tbody>
+            </table>
+        </div>
+
+        <p class="message" id="message"></p>
+
+        <div class="cheque" id="cheque">
+            <h2>Cheque de Ganhos</h2>
+            <p><strong>Nome:</strong> <span id="chequeName"></span></p>
+            <p><strong>Valor:</strong> <span id="chequeAmount"></span> créditos</p>
+        </div>
+    </div>
+
+    <script>
+        let randomNumber = Math.floor(Math.random() * 10) + 1;
+        let balance = 50;
+        let attempts = 0;
+        let gameOver = false;
+
+        function updateUI() {
+            document.getElementById('balance').textContent = balance;
+            document.getElementById('attempts').textContent = attempts;
+        }
+
+        function addBalance() {
+            balance += 50; 
+            updateUI();
+            alert('Saldo adicionado: 50 créditos');
+        }
+
+        document.getElementById('gameForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (gameOver) return;
+
+            const playerName = document.getElementById('playerName').value.trim();
+            const betAmount = parseInt(document.getElementById('betAmount').value, 10);
+            const guess = parseInt(document.getElementById('guess').value, 10);
+
+            if (!playerName || isNaN(betAmount) || isNaN(guess) || betAmount <= 0 || guess < 1 || guess > 10) {
+                alert('Preencha todos os campos corretamente.');
+                return;
+            }
+
+            if (betAmount > balance) {
+                alert('Saldo insuficiente para a aposta.');
+                return;
+            }
+
+            balance -= betAmount; 
+            attempts++;
+            const logTableBody = document.getElementById('logTableBody');
+            let result = '';
+
+            if (guess === randomNumber) {
+                balance += betAmount * 2; 
+                document.body.style.backgroundColor = 'green';
+                gameOver = true;
+                result = 'Acertou!';
+                document.getElementById('message').textContent = `Parabéns, ${playerName}! Você ganhou!`;
+                showCheque(playerName, balance);
+            } else {
+                document.body.style.backgroundColor = 'red';
+                result = guess < randomNumber ? 'Errado (Número maior)' : 'Errado (Número menor)';
+            }
+
+            
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${guess}</td>
+                <td>${result}</td>
+                <td>${balance}</td>
+            `;
+            logTableBody.appendChild(row);
+
+            updateUI();
+        });
+
+        function showCheque(name, amount) {
+            const chequeDiv = document.getElementById('cheque');
+            chequeDiv.style.display = 'block';
+            document.getElementById('chequeName').textContent = name;
+            document.getElementById('chequeAmount').textContent = amount;
+        }
+    </script>
+</body>
+</html>
