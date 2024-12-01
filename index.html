@@ -86,14 +86,14 @@
             <label for="betAmount">Valor da Aposta:</label><br>
             <input type="number" id="betAmount" min="1" placeholder="Digite o valor da aposta" required><br>
 
-            <label for="guess">Digite sua Aposta (1 a 10):</label><br>
+            <label for="guess">Digita a tua Aposta (1 a 10):</label><br>
             <input type="number" id="guess" min="1" max="10" required><br>
 
             <button type="submit" id="submitGuess">Apostar</button>
         </form>
 
         <button id="addBalance" onclick="addBalance()">Adicionar Saldo</button>
-        <p class="info">Saldo: <span id="balance">50</span> créditos</p>
+        <p class="info">Saldo: <span id="balance">20</span> euros</p>
         <p class="info">Tentativas: <span id="attempts">0</span></p>
 
         <div id="gameLog">
@@ -115,13 +115,13 @@
         <div class="cheque" id="cheque">
             <h2>Cheque de Ganhos</h2>
             <p><strong>Nome:</strong> <span id="chequeName"></span></p>
-            <p><strong>Valor:</strong> <span id="chequeAmount"></span> créditos</p>
+            <p><strong>Valor:</strong> <span id="chequeAmount"></span> euros</p>
         </div>
     </div>
 
     <script>
         let randomNumber = Math.floor(Math.random() * 10) + 1;
-        let balance = 50;
+        let balance = 20;
         let attempts = 0;
         let gameOver = false;
 
@@ -131,9 +131,9 @@
         }
 
         function addBalance() {
-            balance += 50; 
+            balance += 20; 
             updateUI();
-            alert('Saldo adicionado: 50 créditos');
+            alert('Saldo adicionado: 20 euros');
         }
 
         document.getElementById('gameForm').addEventListener('submit', function(e) {
@@ -164,7 +164,7 @@
                 document.body.style.backgroundColor = 'green';
                 gameOver = true;
                 result = 'Acertou!';
-                document.getElementById('message').textContent = `Parabéns, ${playerName}! Você ganhou!`;
+                document.getElementById('message').textContent = `Parabéns, ${playerName}! Ganhaste!`;
                 showCheque(playerName, balance);
             } else {
                 document.body.style.backgroundColor = 'red';
